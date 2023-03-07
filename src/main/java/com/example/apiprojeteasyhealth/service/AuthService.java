@@ -22,7 +22,7 @@ public class AuthService {
     private final MedecinRepository medecinRepository;
 
 
-    public void registerUser(UserRegistor userRegistor) {
+    public void registerUser(UserRegistor userRegistor, Role role) {
 
         // Vérifier si l'adresse mail n'est pas déjà utilisée
         if (patientRepository.findByAdresseMail(userRegistor.getAdresseMail()).isPresent() ||
@@ -30,7 +30,7 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Adresse mail déjà utilisée");
         }
         // Enregistrer le patient ou le médecin dans la base de données
-        if (userRegistor.getRole().equals(Role.PATIENT)) {
+        if (role.equals(Role.PATIENT)) {
             Patient patient = Patient.builder()
                     .nom(userRegistor.getNom())
                     .prenom(userRegistor.getPrenom())
@@ -40,7 +40,7 @@ public class AuthService {
                     .pseudo(userRegistor.getPseudo())
                     .build();
             patientRepository.save(patient);
-        } else if (userRegistor.getRole().equals(Role.MEDECIN)) {
+        } else if (role.equals(Role.MEDECIN)) {
             Medecin medecin = Medecin.builder()
                     .nom(userRegistor.getNom())
                     .adresseMail(userRegistor.getAdresseMail())

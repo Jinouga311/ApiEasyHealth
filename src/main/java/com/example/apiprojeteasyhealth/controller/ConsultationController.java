@@ -45,6 +45,7 @@ public class ConsultationController {
     }
 
     @PostMapping("medecin/saisir/{medecinMail}")
+    @Operation(summary = "Le moment du rdv venu, la consultation a donc lieu", description = "Si les attributs date et heure du Json coincident avec la date et l'heure d'un rdv qui existe, alors une consultation peut être entrée. Si cette requête est un succès, elle renvoie alors l'id de la consultation pour l'utiliser sur d'autres requête")
     public ResponseEntity<Long> addConsultation(@RequestBody ConsultationDto consultationDto, @PathVariable String medecinMail) {
         Consultation consultation = consultationService.addConsultation(consultationDto, medecinMail);
         if (consultation == null) {

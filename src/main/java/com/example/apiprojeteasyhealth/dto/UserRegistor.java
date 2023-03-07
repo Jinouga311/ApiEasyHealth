@@ -16,5 +16,4 @@ public class UserRegistor {
     private String numeroTelephone;
     private String pseudo;
     private String motDePasse;
-    private Role role;
 }

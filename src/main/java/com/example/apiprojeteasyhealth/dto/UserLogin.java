@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class UserLogin {
     private String adresseMail;
     private String motDePasse;
-    private Role role;
 }

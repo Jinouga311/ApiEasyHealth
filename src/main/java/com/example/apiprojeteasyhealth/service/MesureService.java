@@ -45,9 +45,7 @@ public class MesureService {
 
         // Vérification de l'existence du suivi en cours pour le patient et la description donnée
         Suivi suivi = suiviRepository.findByConsultationPatientAdresseMailAndDescriptionAndEtat(patient.getAdresseMail(), description, "en cours");
-        if (suivi == null) {
-            return null;
-        }
+
 
         // Création ou modification de la mesure
         Optional<Mesure> mesureOptional = mesureRepository.findBySuiviAndPeriode(suivi, mesureDto.getPeriode());
