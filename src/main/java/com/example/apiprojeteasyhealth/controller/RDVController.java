@@ -33,6 +33,7 @@ public class RDVController {
     }
 
     @PostMapping("/{role}/{mail}")
+    @Operation(summary = "Permet à un patient, ou bien un médecin de poser un RDV", description = "Permet à un patient, ou bien un médecin de poser un RDV avec un autre utilisateur caractérisé par son mail. Un patient pourra poser un RDV avec un médecin, et un médecin avec un patient")
     public ResponseEntity<RDV> createRDV(@RequestBody RDVRequest rdvRequest, @PathVariable Role role, @PathVariable String mail) {
         RDV rdv = rdvService.createRDV(rdvRequest.getDateRDV(), rdvRequest.getHeureRDV(), rdvRequest.getHeure(),
                 rdvRequest.getMailDestinataireRDV(), role, mail);

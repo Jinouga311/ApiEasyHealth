@@ -33,6 +33,7 @@ public class MesureController {
     }
 
     @PostMapping("/{descriptionSuivi}")
+    @Operation(summary = "Permet de renseigner ou modifier une mesure dans le cadre d'un suivi", description = "Si une mesure n'existe pas pour un patient et un suivi donné, alors elle est crée, sinon on modifie le suivi existant")
     public ResponseEntity<Mesure> addMesure(@RequestBody MesureDto mesureDto, @PathVariable String descriptionSuivi, @RequestParam String mailPatient) {
         Mesure mesure = mesureService.addMesure(mesureDto, descriptionSuivi, mailPatient);
         if (mesure == null) {
