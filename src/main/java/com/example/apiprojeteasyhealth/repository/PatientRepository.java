@@ -17,6 +17,8 @@ import java.util.Optional;
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     Optional<Patient> findByAdresseMail(String adresse_mail);
 
+
+
     //Afficher les détails d'un patient :
     @Query("SELECT new com.example.apiprojeteasyhealth.dto.AllAboutPatient(p.nom, p.prenom, p.adresseMail, p.numeroTelephone, c.date, c.prix, pa.libelle, "
             + "m.nom, s.description, s.etat, m.adresseMail, m.numeroTelephone, o.dateOrdo, o.contenu, medicament.nom, medicament.description, pr.quantite) "
