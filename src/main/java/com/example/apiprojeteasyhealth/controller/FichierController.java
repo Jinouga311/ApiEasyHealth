@@ -22,8 +22,10 @@ import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -52,45 +54,22 @@ public class FichierController {
         }
     }
 
-    @GetMapping(value = "/files/{mailPatient}/{mailMedecin}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @Operation(summary = "Get files by patient and medecin")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of files",
-                    content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = Fichier.class))))
-    })
-    public ResponseEntity<InputStreamResource> getFilesByPatientAndMedecin(@PathVariable String mailPatient, @PathVariable String mailMedecin) {
+    @GetMapping(value = "/files/{mailPatient}/{mailMedecin}")
+    public ResponseEntity<List<byte[]>> getFilesByPatientAndMedecin(@PathVariable String mailPatient, @PathVariable String mailMedecin) throws IOException {
         List<Fichier> fichiers = fichierService.getFilesByPatientAndMedecin(mailPatient, mailMedecin);
+        List<byte[]> bytesList = new ArrayList<>();
 
-        // Générer un fichier zip contenant les fichiers retournés
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
-            for (Fichier fichier : fichiers) {
-                Path filePath = Paths.get(fichier.getCheminFichier());
-                File file = filePath.toFile();
-                ZipEntry zipEntry = new ZipEntry(fichier.getNomFichier());
-                zos.putNextEntry(zipEntry);
-                FileInputStream fis = new FileInputStream(file);
-                byte[] buffer = new byte[1024];
-                int len;
-                while ((len = fis.read(buffer)) > 0) {
-                    zos.write(buffer, 0, len);
-                }
-                fis.close();
-                zos.closeEntry();
-            }
-            zos.finish();
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        for (Fichier fichier : fichiers) {
+            byte[] bytes = Files.readAllBytes(Paths.get(fichier.getCheminFichier()));
+            bytesList.add(bytes);
         }
 
-        // Retourner la réponse avec le fichier zip
-        InputStreamResource isr = new InputStreamResource(new ByteArrayInputStream(baos.toByteArray()));
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=fichiers.zip")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(isr);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return new ResponseEntity<>(bytesList, headers, HttpStatus.OK);
     }
+
 
 
 
