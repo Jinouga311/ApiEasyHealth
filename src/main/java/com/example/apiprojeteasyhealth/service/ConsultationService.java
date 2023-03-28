@@ -1,9 +1,6 @@
 package com.example.apiprojeteasyhealth.service;
 
-import com.example.apiprojeteasyhealth.dto.ConsultationDetailedInformationsForMedecin;
-import com.example.apiprojeteasyhealth.dto.ConsultationDto;
-import com.example.apiprojeteasyhealth.dto.ConsultationInformationsForMedecin;
-import com.example.apiprojeteasyhealth.dto.ConsultationInformationsForPatient;
+import com.example.apiprojeteasyhealth.dto.*;
 import com.example.apiprojeteasyhealth.entity.*;
 import com.example.apiprojeteasyhealth.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +27,21 @@ public class ConsultationService {
     private PathologieRepository pathologieRepository;
 
     public List<ConsultationInformationsForMedecin> getAllConsultationsByMedecinMail(String mail) {
-        return consultationRepository.getAllConsultationsByMedecinMail(mail);
+         List<ConsultationInformationsForMedecin> consultationInformationsForMedecins = consultationRepository.getAllConsultationsByMedecinMail(mail);
+        Long idConsultation = 1L;
+        for (ConsultationInformationsForMedecin forMedecin : consultationInformationsForMedecins) {
+            forMedecin.setIdConsultation(idConsultation++);
+        }
+        return consultationInformationsForMedecins;
     }
 
     public List<ConsultationDetailedInformationsForMedecin> getAllDetailledConsultationsByMedecinMail(String mail){
-        return consultationRepository.getAllDeatilledConsultationsByMedecinMail(mail);
+        List<ConsultationDetailedInformationsForMedecin> consultations = consultationRepository.getAllDeatilledConsultationsByMedecinMail(mail);
+        Long idConsultation = 1L;
+        for(ConsultationDetailedInformationsForMedecin forMedecin : consultations){
+            forMedecin.setIdConsultation(idConsultation++);
+        }
+        return consultations;
     }
 
     public List<ConsultationInformationsForPatient> getConsultationsByPatientMail(String mail){

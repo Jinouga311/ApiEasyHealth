@@ -10,6 +10,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConsultationDetailedInformationsForMedecin {
+
+    private Long idConsultation;
     private String medecinMail;
     private String patientNom;
     private String patientPrenom;
@@ -26,4 +28,25 @@ public class ConsultationDetailedInformationsForMedecin {
     private String medicamentNom;
     private String medicamentDescription;
     private Integer prescriptionQuantite;
+
+    public ConsultationDetailedInformationsForMedecin(String medecinMail, String patientNom, String patientPrenom, String patientMail, String patientTelephone,
+                                                      LocalDate consultationDate, Float consultationPrix, String pathologieLibelle, String medecinNom, String suiviDescription,
+                                                      String suiviEtat, LocalDate ordonnanceDate, String ordonnanceContenu, String medicamentNom, String medicamentDescription, Integer prescriptionQuantite){
+        this.medecinMail = medecinMail;
+        this.patientNom = patientNom;
+        this.patientPrenom = patientPrenom;
+        this.patientMail = patientMail;
+        this.patientTelephone = patientTelephone;
+        this.consultationDate = consultationDate;
+        this.consultationPrix = consultationPrix;
+        this.pathologieLibelle = pathologieLibelle;
+        this.medecinNom = medecinNom;
+        this.suiviDescription = suiviDescription;
+        this.suiviEtat = suiviEtat;
+        this.ordonnanceDate = ordonnanceDate;
+        this.ordonnanceContenu = ordonnanceContenu;
+        this.medicamentNom = medicamentNom;
+        this.medicamentDescription = medicamentDescription;
+        this.prescriptionQuantite = prescriptionQuantite;
+    }
 }

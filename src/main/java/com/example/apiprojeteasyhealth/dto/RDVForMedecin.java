@@ -11,10 +11,25 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RDVForMedecin {
-    private LocalDate dateRdv;
+
+    private Long idRdv;
+   private LocalDate dateRdv;
     private LocalTime heureRdv;
+    private LocalTime duree;
     private String nomPatient;
     private String adresseMailPatient;
     private String numeroTelephonePatient;
+
+    public RDVForMedecin(LocalDate dateRdv, LocalTime heureRdv, LocalTime duree, String nomPatient, String adresseMailPatient, String numeroTelephonePatient) {
+        this.dateRdv = dateRdv;
+        this.heureRdv = heureRdv;
+        this.duree = duree;
+        this.nomPatient = nomPatient;
+        this.adresseMailPatient = adresseMailPatient;
+        this.numeroTelephonePatient = numeroTelephonePatient;
+    }
+
+
+
 
 }

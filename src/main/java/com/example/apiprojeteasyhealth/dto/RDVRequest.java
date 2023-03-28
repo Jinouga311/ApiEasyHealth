@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 public class RDVRequest {
     private String dateRDV;
     private String heureRDV;
-    private String heure;
+    private String duree;
     private String mailDestinataireRDV;
+
+
 }

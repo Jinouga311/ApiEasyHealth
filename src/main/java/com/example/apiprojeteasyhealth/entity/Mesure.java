@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +21,9 @@ public class Mesure {
     private String unite;
 
     private String periode;
+
+    @Column(name= "date_mesure")
+    private LocalDate dateMesure;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_suivi")

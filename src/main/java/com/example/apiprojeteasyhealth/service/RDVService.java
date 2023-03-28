@@ -1,9 +1,6 @@
 package com.example.apiprojeteasyhealth.service;
 
-import com.example.apiprojeteasyhealth.dto.RDVDTO;
-import com.example.apiprojeteasyhealth.dto.RDVForMedecin;
-import com.example.apiprojeteasyhealth.dto.RDVForPatient;
-import com.example.apiprojeteasyhealth.dto.Role;
+import com.example.apiprojeteasyhealth.dto.*;
 import com.example.apiprojeteasyhealth.entity.Medecin;
 import com.example.apiprojeteasyhealth.entity.Patient;
 import com.example.apiprojeteasyhealth.entity.RDV;
@@ -15,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -33,11 +32,45 @@ public class RDVService {
 
 
     public List<RDVForPatient> getRDVByPatientMail(String mail){
-        return rdvRepository.getRDVByPatientMail(mail);
+        List<RDVForPatient> rdvForPatient =  rdvRepository.getRDVByPatientMail(mail);
+        Long idRDV = 1L;
+        for (RDVForPatient rdv : rdvForPatient) {
+            rdv.setIdRdv(idRDV++);
+        }
+        return rdvForPatient;
     }
 
     public List<RDVForMedecin> getRDVByMedecinMail(String mail){
-        return rdvRepository.getRDVByMedecinMail(mail);
+        List<RDVForMedecin> rdvForMedecins = rdvRepository.getRDVByMedecinMail(mail);
+        Long idRDV = 1L;
+        for(RDVForMedecin rdv : rdvForMedecins){
+            rdv.setIdRdv(idRDV++);
+        }
+        return rdvForMedecins;
+    }
+
+    public void deleteRDVById(Long id) {
+        rdvRepository.deleteById(id);
+    }
+
+
+    public void modifierRDV(Long id, LocalDate dateRDV, LocalTime heureRDV) {
+        RDV rdv = rdvRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Le RDV avec l'id " + id + " n'existe pas"));
+
+        if (dateRDV != null) {
+            rdv.setDateRDV(dateRDV);
+        }
+        if (heureRDV != null) {
+            rdv.setHeureRDV(heureRDV);
+        }
+
+        rdvRepository.save(rdv);
+    }
+
+
+    public Long getidRdv(LocalDate dateRdv, LocalTime heureRdv, String mailDest){
+        return rdvRepository.findIdByDateRDVAndHeureRDVAndDureeAndMedecinAdresseMail(dateRdv, heureRdv, mailDest);
     }
 
     public RDV createRDV(String dateRDV, String heureRDV, String heure, String mailDestinataireRDV, Role role, String mailEmetteurRDV) {
@@ -45,10 +78,19 @@ public class RDVService {
         LocalTime time = LocalTime.parse(heureRDV);
         LocalTime heureRDVTime = LocalTime.parse(heure);
 
+        // Vérifier si le créneau horaire est libre
+        List<RDV> rdvs = rdvRepository.findAllByMedecinAdresseMailAndDateRDV(mailDestinataireRDV, date);
+        for (RDV existingRdv : rdvs) {
+            if (time.isBefore(existingRdv.getHeureRDV().plus(Duration.between(LocalTime.MIN, existingRdv.getDuree()))) &&
+                    existingRdv.getHeureRDV().isBefore(time.plus(Duration.between(LocalTime.MIN, heureRDVTime)))) {
+                throw new IllegalArgumentException("Créneau horaire déjà pris");
+            }
+        }
+
         RDV rdv = new RDV();
         rdv.setDateRDV(date);
         rdv.setHeureRDV(time);
-        rdv.setHeure(heureRDVTime);
+        rdv.setDuree(heureRDVTime);
 
         if (role == Role.MEDECIN) {
             Optional<Medecin> medecin = medecinRepository.findByAdresseMail(mailEmetteurRDV);
@@ -76,6 +118,9 @@ public class RDVService {
 
         return rdvRepository.save(rdv);
     }
+
+
+
 
 
     public RDV getRDVById(Long id) {
