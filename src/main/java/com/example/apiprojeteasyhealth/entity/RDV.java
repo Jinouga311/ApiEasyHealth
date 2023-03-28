@@ -24,8 +24,8 @@ public class RDV {
     @Column(name = "heure_rdv", nullable = false)
     private LocalTime heureRDV;
 
-    @Column(nullable = false)
-    private LocalTime heure;
+    @Column(name="heure", nullable = false)
+    private LocalTime duree;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_patient")

@@ -18,21 +18,28 @@ import java.util.Optional;
 @Repository
 public interface RDVRepository extends JpaRepository<RDV, Long> {
 
-    @Query("SELECT new com.example.apiprojeteasyhealth.dto.RDVForPatient(r.dateRDV, r.heureRDV, m.nom, m.adresseMail, m.numeroTelephone) "
+    @Query("SELECT new com.example.apiprojeteasyhealth.dto.RDVForPatient(r.dateRDV, r.heureRDV, r.duree, m.nom, m.adresseMail, m.numeroTelephone) "
             + "FROM RDV r "
             + "JOIN r.medecin m "
             + "WHERE r.patient.adresseMail = :mail "
             + "ORDER BY r.dateRDV ASC")
     List<RDVForPatient> getRDVByPatientMail(@Param("mail") String mail);
-    @Query("SELECT new com.example.apiprojeteasyhealth.dto.RDVForMedecin(r.dateRDV, r.heureRDV, p.nom, p.adresseMail, p.numeroTelephone) "
+    @Query("SELECT new com.example.apiprojeteasyhealth.dto.RDVForMedecin(r.dateRDV, r.heureRDV, r.duree, p.nom, p.adresseMail, p.numeroTelephone) "
             + "FROM RDV r "
             + "JOIN r.patient p "
             + "WHERE r.medecin.adresseMail = :mail "
             + "ORDER BY r.dateRDV ASC")
     List<RDVForMedecin> getRDVByMedecinMail(@Param("mail") String mail);
 
+    @Query("SELECT rdv.id FROM RDV rdv WHERE rdv.dateRDV = :dateRDV AND rdv.heureRDV = :heureRDV  AND rdv.medecin.adresseMail = :mailDestinataireRDV")
+    Long findIdByDateRDVAndHeureRDVAndDureeAndMedecinAdresseMail(@Param("dateRDV") LocalDate dateRDV, @Param("heureRDV") LocalTime heureRDV, @Param("mailDestinataireRDV") String mailDestinataireRDV);
+
 
     RDV findByMedecinAndPatientAndDateRDVAndHeureRDV(Medecin medecin, Optional<Patient> patient, LocalDate dateRDV, LocalTime heureRDV);
+
+    List<RDV> findAllByMedecinAdresseMailAndDateRDV(String medecinMail, LocalDate date);
+
+
 
 
 }

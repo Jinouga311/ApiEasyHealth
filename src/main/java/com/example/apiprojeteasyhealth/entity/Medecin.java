@@ -34,6 +34,9 @@ public class Medecin {
     @Column(name = "mot_de_passe", nullable = false)
     private String motDePasse;
 
+    @Column(name = "chemin_photo", nullable = false)
+    private String cheminFichier;
+
     @OneToMany(mappedBy = "medecin")
     private List<Consultation> consultations;
 

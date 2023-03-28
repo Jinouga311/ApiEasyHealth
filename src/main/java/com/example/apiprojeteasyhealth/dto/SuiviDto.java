@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SuiviDto {
+
+    private Integer id;
     private String description;
     private String etat;
 }

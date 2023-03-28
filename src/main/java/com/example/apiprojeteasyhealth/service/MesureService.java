@@ -29,42 +29,58 @@ public class MesureService {
     PatientRepository patientRepository;
 
     public List<MesureForPatientAndPathologie> getMesureFromPatientAndPathologie(String mailPatient, String Pathologie, LocalDate starDate, LocalDate endDate){
-        return mesureRepository.getMesureFromPatientAndPathologie(mailPatient, Pathologie, starDate, endDate);
+        List<MesureForPatientAndPathologie> mesures =  mesureRepository.getMesureFromPatientAndPathologie(mailPatient, Pathologie, starDate, endDate);
+
+        Long idMesure = 1L;
+        for (MesureForPatientAndPathologie mesure : mesures) {
+            mesure.setIdMesure(idMesure++);
+        }
+
+        return mesures;
     }
 
     public List<MesureForPatient> getMesureFromPatient(String mailPatient, LocalDate starDate, LocalDate endDate){
-        return mesureRepository.getMesureFromPatient(mailPatient, starDate, endDate);
+        List<MesureForPatient> mesures = mesureRepository.getMesureFromPatient(mailPatient, starDate, endDate);
+
+        Long idMesure = 1L;
+        for (MesureForPatient mesure : mesures) {
+            mesure.setIdMesure(idMesure++);
+        }
+
+        return mesures;
     }
 
     public Mesure addMesure(MesureDto mesureDto, String description, String mailPatient) {
         // Vérification de l'existence du patient
         Patient patient = patientRepository.findByAdresseMail(mailPatient).orElse(null);
         if (patient == null) {
-            return null;
+            throw new IllegalArgumentException("Patient not found.");
         }
 
         // Vérification de l'existence du suivi en cours pour le patient et la description donnée
         Suivi suivi = suiviRepository.findByConsultationPatientAdresseMailAndDescriptionAndEtat(patient.getAdresseMail(), description, "en cours");
-
-
-        // Création ou modification de la mesure
-        Optional<Mesure> mesureOptional = mesureRepository.findBySuiviAndPeriode(suivi, mesureDto.getPeriode());
-        if (mesureOptional.isPresent()) {
-            Mesure existingMesure = mesureOptional.get();
-            existingMesure.setValeur(mesureDto.getValeur());
-            mesureRepository.save(existingMesure);
-            return existingMesure;
-        } else {
-            Mesure mesure = new Mesure();
-            mesure.setSuivi(suivi);
-            mesure.setPatient(patient);
-            mesure.setValeur(mesureDto.getValeur());
-            mesure.setUnite(mesureDto.getUnite());
-            mesure.setPeriode(mesureDto.getPeriode());
-            mesureRepository.save(mesure);
-            return mesure;
+        if (suivi == null) {
+            throw new IllegalArgumentException("Suivi not found.");
         }
+
+        // Vérification de l'existence de la mesure pour le suivi, la date et la période données
+        Optional<Mesure> mesureOptional = mesureRepository.findBySuiviAndDateMesureAndPeriode(suivi, mesureDto.getDateMesure(), mesureDto.getPeriode());
+        if (mesureOptional.isPresent()) {
+            throw new IllegalArgumentException("Mesure already exists for the given date and period.");
+        }
+
+        // Création de la mesure
+        Mesure mesure = new Mesure();
+        mesure.setSuivi(suivi);
+        mesure.setPatient(patient);
+        mesure.setValeur(mesureDto.getValeur());
+        mesure.setUnite(mesureDto.getUnite());
+        mesure.setPeriode(mesureDto.getPeriode());
+        mesure.setDateMesure(mesureDto.getDateMesure());
+        mesureRepository.save(mesure);
+        return mesure;
     }
+
 }
 
 

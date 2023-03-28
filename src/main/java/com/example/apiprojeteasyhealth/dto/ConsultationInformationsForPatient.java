@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConsultationInformationsForPatient {
+
+    private Long idConsultation;
     private LocalDate date;
     private Float prix;
     private String pathologieLibelle;

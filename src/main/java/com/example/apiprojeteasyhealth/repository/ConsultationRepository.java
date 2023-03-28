@@ -40,7 +40,7 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
     List<ConsultationDetailedInformationsForMedecin> getAllDeatilledConsultationsByMedecinMail(@Param("mail") String mail);
 
     //Afiche la liste des consultations pour un patient donnée
-    @Query("SELECT new com.example.apiprojeteasyhealth.dto.ConsultationInformationsForPatient(c.date, c.prix, pa.libelle, m.nom, s.description, s.etat, o.dateOrdo, o.contenu, med.nom, med.description, pr.quantite) \n" +
+    @Query("SELECT new com.example.apiprojeteasyhealth.dto.ConsultationInformationsForPatient(c.id, c.date, c.prix, pa.libelle, m.nom, s.description, s.etat, o.dateOrdo, o.contenu, med.nom, med.description, pr.quantite) \n" +
             "FROM Consultation c \n" +
             "JOIN Pathologie pa ON c.pathologie.id = pa.id \n" +
             "JOIN Medecin m ON c.medecin.id = m.id \n" +
@@ -54,7 +54,7 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
     List<ConsultationInformationsForPatient> getConsultationsInformationsForPatientByMail(@Param("adresseMail") String adresseMail);
 
     //Afiche la liste des consultations avec suivi pour un patient donnée
-    @Query("SELECT new com.example.apiprojeteasyhealth.dto.ConsultationInformationsForPatient(c.date, c.prix, pa.libelle, m.nom, s.description, s.etat, o.dateOrdo, o.contenu, med.nom, med.description, pr.quantite) " +
+    @Query("SELECT new com.example.apiprojeteasyhealth.dto.ConsultationInformationsForPatient(c.id, c.date, c.prix, pa.libelle, m.nom, s.description, s.etat, o.dateOrdo, o.contenu, med.nom, med.description, pr.quantite) " +
             "FROM Consultation c " +
             "JOIN Pathologie pa ON c.pathologie.id = pa.id " +
             "JOIN Medecin m ON c.medecin.id = m.id " +
