@@ -80,4 +80,28 @@ public class FichierService {
         return fichierRepository.findByPatientAndMedecin(patient, medecin);
     }
 
+    public void renameFile(String currentFileName, String newFileName) throws IOException {
+        Optional<Fichier> optionalFichier = fichierRepository.findByNomFichier(currentFileName);
+        Fichier fichier = optionalFichier.orElseThrow(() -> new IllegalArgumentException("File not found with name : " + currentFileName));
+
+        Path currentFilePath = Paths.get(fichier.getCheminFichier());
+        Path newFilePath = currentFilePath.resolveSibling(newFileName);
+
+        Files.move(currentFilePath, newFilePath, StandardCopyOption.REPLACE_EXISTING);
+
+        fichier.setNomFichier(newFileName);
+        fichier.setCheminFichier(newFilePath.toAbsolutePath().toString());
+        fichierRepository.save(fichier);
+    }
+
+    public void deleteFile(String fileName) throws IOException {
+        Optional<Fichier> optionalFichier = fichierRepository.findByNomFichier(fileName);
+        Fichier fichier = optionalFichier.orElseThrow(() -> new IllegalArgumentException("File not found with name : " + fileName));
+
+        Path filePath = Paths.get(fichier.getCheminFichier());
+        Files.deleteIfExists(filePath);
+
+        fichierRepository.delete(fichier);
+    }
+
 }

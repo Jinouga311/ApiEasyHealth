@@ -70,6 +70,31 @@ public class FichierController {
         return new ResponseEntity<>(bytesList, headers, HttpStatus.OK);
     }
 
+    @PutMapping(value = "rename/{currentFileName}/{newFileName}")
+    public ResponseEntity<?> renameFile(
+            @PathVariable String currentFileName,
+            @PathVariable String newFileName
+    ) {
+        try {
+            fichierService.renameFile(currentFileName, newFileName);
+            return ResponseEntity.ok("File renamed successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping(value = "delete/{fileName}")
+    public ResponseEntity<?> deleteFile(
+            @PathVariable String fileName
+    ) {
+        try {
+            fichierService.deleteFile(fileName);
+            return ResponseEntity.ok("File deleted successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
 
 
