@@ -80,6 +80,15 @@ public class FichierService {
         return fichierRepository.findByPatientAndMedecin(patient, medecin);
     }
 
+    public List<Fichier> getFilesByMedecin(String mailMedecin) {
+        // Recherche du médecin
+        Optional<Medecin> optionalMedecin = medecinRepository.findByAdresseMail(mailMedecin);
+        Medecin medecin = optionalMedecin.orElseThrow(() -> new IllegalArgumentException("Medecin not found with email : " + mailMedecin));
+
+        return fichierRepository.findByMedecin(medecin);
+    }
+
+
     public void renameFile(String currentFileName, String newFileName) throws IOException {
         Optional<Fichier> optionalFichier = fichierRepository.findByNomFichier(currentFileName);
         Fichier fichier = optionalFichier.orElseThrow(() -> new IllegalArgumentException("File not found with name : " + currentFileName));
