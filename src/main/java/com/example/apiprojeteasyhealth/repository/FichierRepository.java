@@ -12,5 +12,6 @@ import java.util.Optional;
 @Repository
 public interface FichierRepository  extends JpaRepository<Fichier, Long> {
     List<Fichier> findByPatientAndMedecin(Patient patient, Medecin medecin);
+    List<Fichier> findByMedecin(Medecin medecin);
     Optional<Fichier> findByNomFichier(String nomFichier);
 }
