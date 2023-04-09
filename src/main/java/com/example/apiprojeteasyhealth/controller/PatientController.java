@@ -45,10 +45,10 @@ public class PatientController {
             return ResponseEntity.notFound().build();
         } else {
             AllAboutPatient patientInfo = result.get(0);
-            if (patientInfo.getCheminFichier() != null) {
-                byte[] fileBytes = Files.readAllBytes(Paths.get(patientInfo.getCheminFichier()));
+            if (patientInfo.getPhotoProfil() != null) {
+                byte[] fileBytes = Files.readAllBytes(Paths.get(patientInfo.getPhotoProfil()));
                 String encodedFile = Base64.getEncoder().encodeToString(fileBytes);
-                patientInfo.setCheminFichier(encodedFile);
+                patientInfo.setPhotoProfil(encodedFile);
             }
             return ResponseEntity.ok(patientInfo);
         }

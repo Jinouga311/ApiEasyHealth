@@ -35,10 +35,10 @@ public class MedecinController {
             return ResponseEntity.notFound().build();
         } else {
             AllAboutMedecin medecinInfo = result.get(0);
-            if (medecinInfo.getCheminFichier() != null) {
-                byte[] fileBytes = Files.readAllBytes(Paths.get(medecinInfo.getCheminFichier()));
+            if (medecinInfo.getPhotoProfil() != null) {
+                byte[] fileBytes = Files.readAllBytes(Paths.get(medecinInfo.getPhotoProfil()));
                 String encodedFile = Base64.getEncoder().encodeToString(fileBytes);
-                medecinInfo.setCheminFichier(encodedFile);
+                medecinInfo.setPhotoProfil(encodedFile);
             }
             return ResponseEntity.ok(medecinInfo);
         }

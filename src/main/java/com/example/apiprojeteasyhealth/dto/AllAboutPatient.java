@@ -19,7 +19,7 @@ public class AllAboutPatient {
     private String adresseMail;
     private String numeroTelephone;
 
-    private String cheminFichier;
+    private String photoProfil;
 
     private List<ConsultationInformationsForPatient> consultations;
 

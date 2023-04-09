@@ -15,7 +15,9 @@ public class AllAboutMedecin {
     private String nom;
     private String adresseMail;
     private String numeroTelephone;
-    private String cheminFichier;
+
+    private String specialite;
+    private String photoProfil;
 
     private List<ConsultationInformationsForMedecin> consultations = new ArrayList<>();
 }

@@ -20,7 +20,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
 
     //Afficher les détails d'un patient :
-    @Query("SELECT p.id as idPatient, p.nom as nom, p.prenom as prenom, p.adresseMail as adresseMail, p.numeroTelephone as numeroTelephone, p.cheminFichier as cheminFichier, "
+    @Query("SELECT p.id as idPatient, p.nom as nom, p.prenom as prenom, p.adresseMail as adresseMail, p.numeroTelephone as numeroTelephone, p.cheminFichier as photoProfil, "
             + "c.id as idConsultation, c.date as date, c.prix as prix, pa.libelle as pathologieLibelle, m.nom as medecinNom, "
             + "s.description as suiviDescription, s.etat as suiviEtat, o.dateOrdo as ordonnanceDate, o.contenu as ordonnanceContenu, "
             + "medicament.nom as medicamentNom, medicament.description as medicamentDescription, pr.quantite as prescriptionQuantite "
@@ -51,7 +51,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
                         row.get("prenom", String.class),
                         row.get("adresseMail", String.class),
                         row.get("numeroTelephone", String.class),
-                        row.get("cheminFichier", String.class),
+                        row.get("photoProfil", String.class),
                         new ArrayList<>()
                 );
             });
