@@ -42,9 +42,15 @@ public class MedecinService {
                 File oldFile = new File(oldFilePath);
                 oldFile.delete();
             }
+            // Créer le répertoire s'il n'existe pas
+            Path uploadDir = Paths.get("C:/profilEasyHealth/medecin");
+            try {
+                Files.createDirectories(uploadDir);
+            } catch (IOException e) {
+                throw new RuntimeException("Could not create directory: " + uploadDir + ". Please try again!", e);
+            }
             // Enregistrer la nouvelle photo de profil
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            Path uploadDir = Paths.get("C:/profilEasyHealth/medecin");
             Path filePath = uploadDir.resolve(fileName);
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -72,7 +78,5 @@ public class MedecinService {
 
         return medecinRepository.save(medecin);
     }
-
-
-
 }
+
