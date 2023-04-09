@@ -34,6 +34,8 @@ public class Medecin {
     @Column(name = "mot_de_passe", nullable = false)
     private String motDePasse;
 
+    private String specialite;
+
     @Column(name = "chemin_photo", nullable = false)
     private String cheminFichier;
 
