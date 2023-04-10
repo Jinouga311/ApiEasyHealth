@@ -46,20 +46,20 @@ public class PatientService {
         return patientRepository.getPatientsSuiviDetailsByMedecinAdresseMail(mail);
     }
 
-    public Patient updatePatient(String medecinMail, MultipartFile file, String adresseMail, String numeroTelephone, String pseudo, String motDePasse) {
+    public Patient updatePatient(String medecinMail, MultipartFile file, String adresseMail, String numeroTelephone, String pseudo, String motDePasse) throws IOException {
         Patient patient = patientRepository.findByAdresseMail(medecinMail)
                 .orElseThrow(() -> new PatientNotFoundException("Medecin not found with email: " + medecinMail));
 
         if (file != null && !file.isEmpty()) {
             // Supprimer l'ancienne photo de profil s'il y en avait une
             if (patient.getCheminFichier() != null && !patient.getCheminFichier().isEmpty()) {
-                String oldFilePath = "C:/profilEasyHealth/patient/" + patient.getCheminFichier();
-                File oldFile = new File(oldFilePath);
-                oldFile.delete();
+                Path oldFilePath = Paths.get(patient.getCheminFichier());
+                Files.deleteIfExists(oldFilePath);
             }
             // Enregistrer la nouvelle photo de profil
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            Path uploadDir = Paths.get("C:/profilEasyHealth/patient");
+            Path uploadDir = Paths.get("profilEasyHealth", "patient").toAbsolutePath().normalize();
+            Files.createDirectories(uploadDir);
             Path filePath = uploadDir.resolve(fileName);
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -67,11 +67,11 @@ public class PatientService {
                 throw new RuntimeException("Could not store file " + fileName + ". Please try again!", e);
             }
             // Mettre à jour le chemin d'accès à la photo de profil dans la base de données
-            String fileFullPath = "C:/profilEasyHealth/patient/" + fileName;
+            String fileFullPath = filePath.toString();
             patient.setCheminFichier(fileFullPath);
         }
 
-// Mettre à jour les autres informations du patient si elles sont fournies
+        // Mettre à jour les autres informations du patient si elles sont fournies
         if (adresseMail != null) {
             patient.setAdresseMail(adresseMail);
         }
@@ -87,6 +87,7 @@ public class PatientService {
 
         return patientRepository.save(patient);
     }
+
 
 
 }

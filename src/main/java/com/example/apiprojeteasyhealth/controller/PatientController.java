@@ -98,7 +98,7 @@ public class PatientController {
             @RequestParam(value = "adresseMail", required = false) String adresseMail,
             @RequestParam(value = "numeroTelephone", required = false) String numeroTelephone,
             @RequestParam(value = "pseudo", required = false) String pseudo,
-            @RequestParam(value = "motDePasse", required = false) String motDePasse) {
+            @RequestParam(value = "motDePasse", required = false) String motDePasse) throws IOException {
 
         Patient patient = patientService.updatePatient(patientMail, file, adresseMail, numeroTelephone, pseudo, motDePasse);
 

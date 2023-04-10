@@ -31,26 +31,27 @@ public class MedecinService {
         return medecinRepository.getMedecinInfoByEmail(adresseMail);
     }
 
-    public Medecin updateMedecin(String medecinMail, MultipartFile file, String adresseMail, String numeroTelephone, String pseudo, String motDePasse) {
+    public List<AllAboutMedecin> getAllMedecinsInfo() {
+        return medecinRepository.getAllMedecinsInfo();
+    }
+
+
+
+
+    public Medecin updateMedecin(String medecinMail, MultipartFile file, String adresseMail, String numeroTelephone, String pseudo, String motDePasse) throws IOException {
         Medecin medecin = medecinRepository.findByAdresseMail(medecinMail)
                 .orElseThrow(() -> new MedecinNotFoundException("Medecin not found with email: " + medecinMail));
 
         if (file != null && !file.isEmpty()) {
             // Supprimer l'ancienne photo de profil s'il y en avait une
             if (medecin.getCheminFichier() != null && !medecin.getCheminFichier().isEmpty()) {
-                String oldFilePath = "C:/profilEasyHealth/medecin/" + medecin.getCheminFichier();
-                File oldFile = new File(oldFilePath);
-                oldFile.delete();
-            }
-            // Créer le répertoire s'il n'existe pas
-            Path uploadDir = Paths.get("C:/profilEasyHealth/medecin");
-            try {
-                Files.createDirectories(uploadDir);
-            } catch (IOException e) {
-                throw new RuntimeException("Could not create directory: " + uploadDir + ". Please try again!", e);
+                Path oldFilePath = Paths.get(medecin.getCheminFichier());
+                Files.deleteIfExists(oldFilePath);
             }
             // Enregistrer la nouvelle photo de profil
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            Path uploadDir = Paths.get("profilEasyHealth", "medecin").toAbsolutePath().normalize();
+            Files.createDirectories(uploadDir);
             Path filePath = uploadDir.resolve(fileName);
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -58,7 +59,7 @@ public class MedecinService {
                 throw new RuntimeException("Could not store file " + fileName + ". Please try again!", e);
             }
             // Mettre à jour le chemin d'accès à la photo de profil dans la base de données
-            String fileFullPath = "C:/profilEasyHealth/medecin/" + fileName;
+            String fileFullPath = filePath.toString();
             medecin.setCheminFichier(fileFullPath);
         }
 
@@ -78,5 +79,8 @@ public class MedecinService {
 
         return medecinRepository.save(medecin);
     }
+
+
+
 }
 
