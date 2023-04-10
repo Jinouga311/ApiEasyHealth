@@ -1,5 +1,6 @@
 package com.example.apiprojeteasyhealth.controller;
 
+import com.example.apiprojeteasyhealth.dto.FichierDto;
 import com.example.apiprojeteasyhealth.entity.Fichier;
 import com.example.apiprojeteasyhealth.service.FichierService;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -26,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -54,38 +56,23 @@ public class FichierController {
         }
     }
 
+
     @GetMapping(value = "/files/{mailPatient}/{mailMedecin}")
-    @Operation(summary = "Récupérer des fichiers de patient et médecin", description = "Récupère tout les fichiers concernant un patient et un médecin")
-    public ResponseEntity<List<byte[]>> getFilesByPatientAndMedecin(@PathVariable String mailPatient, @PathVariable String mailMedecin) throws IOException {
+    public ResponseEntity<List<FichierDto>> getFilesByPatientAndMedecin(@PathVariable String mailPatient, @PathVariable String mailMedecin) throws IOException {
         List<Fichier> fichiers = fichierService.getFilesByPatientAndMedecin(mailPatient, mailMedecin);
-        List<byte[]> bytesList = new ArrayList<>();
+        List<FichierDto> fichierDtos = new ArrayList<>();
 
         for (Fichier fichier : fichiers) {
             byte[] bytes = Files.readAllBytes(Paths.get(fichier.getCheminFichier()));
-            bytesList.add(bytes);
+            String base64Data = Base64.getEncoder().encodeToString(bytes);
+            FichierDto fichierDto = new FichierDto(fichier.getNomFichier(), base64Data);
+            fichierDtos.add(fichierDto);
         }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        return new ResponseEntity<>(bytesList, headers, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/files/{mailMedecin}")
-    @Operation(summary = "Récupérer des fichiers d'un médecin", description = "Récupérer tout les fichiers concernant un médecin")
-    public ResponseEntity<List<byte[]>> getFilesByMedecin(@PathVariable String mailMedecin) throws IOException {
-        List<Fichier> fichiers = fichierService.getFilesByMedecin(mailMedecin);
-        List<byte[]> bytesList = new ArrayList<>();
-
-        for (Fichier fichier : fichiers) {
-            byte[] bytes = Files.readAllBytes(Paths.get(fichier.getCheminFichier()));
-            bytesList.add(bytes);
-        }
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        return new ResponseEntity<>(bytesList, headers, HttpStatus.OK);
+        return new ResponseEntity<>(fichierDtos, headers, HttpStatus.OK);
     }
 
 
