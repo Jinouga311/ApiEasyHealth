@@ -61,7 +61,17 @@ public class OrdonnanceService {
         // Créer l'ordonnance
         Ordonnance ordonnance = new Ordonnance();
         ordonnance.setDateOrdo(ordonnanceDto.getDateOrdo());
-        ordonnance.setContenu(ordonnanceDto.getPrescriptions().get(0).getMedicamentNom());
+
+        // Mettre à jour le contenu de l'ordonnance avec les noms de médicaments de toutes les prescriptions
+        StringBuilder contenu = new StringBuilder();
+        for (int i = 0; i < ordonnanceDto.getPrescriptions().size(); i++) {
+            if (i > 0) {
+                contenu.append(", ");
+            }
+            contenu.append(ordonnanceDto.getPrescriptions().get(i).getMedicamentNom());
+        }
+        ordonnance.setContenu(contenu.toString());
+
         ordonnance.setConsultation(consultation);
         ordonnanceRepository.save(ordonnance);
 
