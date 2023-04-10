@@ -44,6 +44,25 @@ public class MedecinController {
         }
     }
 
+    @GetMapping("/all")
+    @Operation(summary = "Liste des médecins", description = "Afficher la liste de tous les médecins et leurs informations associées")
+    public ResponseEntity<List<AllAboutMedecin>> getAllMedecinsInfo() throws IOException {
+        List<AllAboutMedecin> allMedecins = medecinService.getAllMedecinsInfo();
+
+        for (AllAboutMedecin medecin : allMedecins) {
+            if (medecin.getPhotoProfil() != null) {
+                byte[] fileBytes = Files.readAllBytes(Paths.get(medecin.getPhotoProfil()));
+                String encodedFile = Base64.getEncoder().encodeToString(fileBytes);
+                medecin.setPhotoProfil(encodedFile);
+            }
+        }
+
+        return ResponseEntity.ok(allMedecins);
+    }
+
+
+
+
     @PutMapping(value = "/{medecinMail}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Modifier informations d'un médecin", description = "Modifier une ou plusieurs informations d'un médecin")
     public ResponseEntity<Medecin> updateMedecin(
@@ -52,7 +71,7 @@ public class MedecinController {
             @RequestParam(value = "adresseMail", required = false) String adresseMail,
             @RequestParam(value = "numeroTelephone", required = false) String numeroTelephone,
             @RequestParam(value = "pseudo", required = false) String pseudo,
-            @RequestParam(value = "motDePasse", required = false) String motDePasse) {
+            @RequestParam(value = "motDePasse", required = false) String motDePasse) throws IOException {
 
         Medecin medecin = medecinService.updateMedecin(medecinMail, file, adresseMail, numeroTelephone, pseudo, motDePasse);
 
