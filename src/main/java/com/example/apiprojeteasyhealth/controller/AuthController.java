@@ -32,7 +32,7 @@ public class AuthController {
     @PostMapping(value= "/register/{role}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE})
     @Operation(summary = "Permet à un médecin ou un patient de s'inscrire", description = "En fonction du rôle choisit, un médecin ou un patient peuvent s'inscrire, pour rappel un patient doit s'inscrire depuis l'appli mobile, l'admin web peut quant à lui inscrire un médecin et un patient si il le souhaite depuis une appli web")
     public ResponseEntity<?> registerUser(
-            @RequestPart(value = "file", required = true) @Parameter(description = "Fichier à envoyer") MultipartFile file,
+            @RequestPart(value = "file", required = false) @Parameter(description = "Fichier à envoyer") MultipartFile file,
             @RequestPart(value = "userRegistor", required = true) @Parameter(description = "Informations de l'utilisateur", schema = @Schema(type = "object", implementation = UserRegistor.class)) UserRegistor userRegistor,
             @PathVariable Role role) throws IOException {
         authService.registerUser(file, userRegistor, role);

@@ -20,9 +20,9 @@ public class OrdonnanceController {
     public ResponseEntity<Ordonnance> addOrdonnance(@RequestBody OrdonnanceDto ordonnanceDto, @PathVariable Long idConsultation) {
         Ordonnance ordonnance = ordonnanceService.addOrdonnance(ordonnanceDto, idConsultation);
         if (ordonnance == null) {
-            return ResponseEntity.badRequest().build();
+            ResponseEntity.ok(null);
         }
-        return ResponseEntity.ok(ordonnance);
+        return ResponseEntity.ok(null);
     }
 
 }

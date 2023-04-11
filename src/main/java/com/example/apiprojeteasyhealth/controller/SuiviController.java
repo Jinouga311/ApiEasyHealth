@@ -21,9 +21,9 @@ public class SuiviController {
     public ResponseEntity<Suivi> addSuivi(@RequestBody SuiviDto suiviDto, @PathVariable Long idConsultation) {
         Suivi suivi = suiviService.addSuivi(suiviDto, idConsultation);
         if (suivi == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(null);
         }
-        return ResponseEntity.ok(suivi);
+        return ResponseEntity.ok(null);
     }
 
 }
