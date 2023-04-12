@@ -25,6 +25,9 @@ public class Mesure {
     @Column(name= "date_mesure")
     private LocalDate dateMesure;
 
+    @Column(name="nom_mesure")
+    private String nomMesure;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_suivi")
     private Suivi suivi;

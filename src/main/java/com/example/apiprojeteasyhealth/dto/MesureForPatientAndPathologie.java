@@ -14,12 +14,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MesureForPatientAndPathologie {
 
-    public MesureForPatientAndPathologie(Float valeur, String unite, String periode, LocalDate date, String pathologie) {
+    public MesureForPatientAndPathologie(Float valeur, String unite, String periode, LocalDate date, String nomMesure, String pathologie) {
         this.valeur = valeur;
         this.unite = unite;
         this.periode = periode;
         this.date = date;
         this.pathologie = pathologie;
+        this.nomMesure = nomMesure;
     }
 
     @Transient
@@ -30,4 +31,6 @@ public class MesureForPatientAndPathologie {
     private String periode;
     private LocalDate date;
     private String pathologie;
+
+    private String nomMesure;
 }

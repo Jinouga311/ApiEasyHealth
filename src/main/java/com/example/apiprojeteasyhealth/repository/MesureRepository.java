@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface MesureRepository extends JpaRepository<Mesure, Long> {
 
     //Affiche les dernières mesures d'un patient pour une pathologie donnée
-    @Query("SELECT new com.example.apiprojeteasyhealth.dto.MesureForPatientAndPathologie(m.valeur, m.unite, m.periode, m.dateMesure, pa.libelle) "
+    @Query("SELECT new com.example.apiprojeteasyhealth.dto.MesureForPatientAndPathologie(m.valeur, m.unite, m.periode, m.dateMesure, m.nomMesure, pa.libelle) "
             + "FROM Mesure m "
             + "JOIN m.suivi s "
             + "JOIN s.consultation c "
@@ -41,9 +41,9 @@ public interface MesureRepository extends JpaRepository<Mesure, Long> {
 
     Optional<Mesure> findBySuiviAndPeriode(Suivi suivi, String periode);
 
-    Optional<Mesure> findBySuiviAndDateMesureAndPeriode(@Param("suivi") Suivi suivi,
+    Optional<Mesure> findBySuiviAndDateMesureAndPeriodeAndNomMesure(@Param("suivi") Suivi suivi,
                                                         @Param("dateMesure") LocalDate dateMesure,
-                                                        @Param("periode") String periode);
+                                                        @Param("periode") String periode, @Param("nomMesure") String nomMesure);
 
 
 

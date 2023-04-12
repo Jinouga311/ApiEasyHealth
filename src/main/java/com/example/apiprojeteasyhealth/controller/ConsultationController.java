@@ -34,7 +34,7 @@ public class ConsultationController {
 
     @GetMapping("/patient/{patientMail}")
     @Operation(summary = "Consultations d'un patient avec ou sans suivi", description = "Affiche entièrement la liste des consultations d'un patient")
-    public List<ConsultationInformationsForPatient> getConsultationsByPatientMail(@PathVariable String patientMail){
+    public List<ConsultationInformationsForPatient> getConsultationsByPatientMail(@PathVariable String patientMail) {
         return consultationService.getConsultationsByPatientMail(patientMail);
     }
 
