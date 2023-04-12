@@ -3,6 +3,7 @@ package com.example.apiprojeteasyhealth.dto;
 import java.time.LocalDate;
 import java.util.Date;
 
+import com.example.apiprojeteasyhealth.entity.Ordonnance;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +20,5 @@ public class ConsultationInformationsForPatient {
     private String medecinNom;
     private String suiviDescription;
     private String suiviEtat;
-    private LocalDate ordonnanceDate;
-    private String ordonnanceContenu;
-    private String medicamentNom;
-    private String medicamentDescription;
-    private Integer prescriptionQuantite;
+    private OrdonnanceDto ordonnance;
 }

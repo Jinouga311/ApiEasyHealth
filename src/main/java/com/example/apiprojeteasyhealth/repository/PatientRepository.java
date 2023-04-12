@@ -38,8 +38,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     public default List<AllAboutPatient> getPatientInfoByEmail(String adresseMail) {
         List<Tuple> rawData = findPatientInfoByEmail(adresseMail);
         Map<Long, AllAboutPatient> resultMap = new LinkedHashMap<>();
-        Map<Long, Long> consultationIdMap = new HashMap<>();
-        long genericConsultationId = 1;
+        Map<Long, ConsultationInformationsForPatient> consultationMap = new HashMap<>();
 
         for (Tuple row : rawData) {
             Long idPatient = row.get("idPatient", Long.class);
@@ -57,28 +56,35 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
             });
 
             Long idConsultation = row.get("idConsultation", Long.class);
-            if (idConsultation != null && !consultationIdMap.containsKey(idConsultation)) {
-                consultationIdMap.put(idConsultation, genericConsultationId);
-                ConsultationInformationsForPatient consultation = new ConsultationInformationsForPatient(
-                        genericConsultationId++,
+            ConsultationInformationsForPatient consultation = consultationMap.computeIfAbsent(idConsultation, k -> {
+                ConsultationInformationsForPatient newConsultation = new ConsultationInformationsForPatient(
+                        idConsultation,
                         row.get("date", LocalDate.class),
                         row.get("prix", Float.class),
                         row.get("pathologieLibelle", String.class),
                         row.get("medecinNom", String.class),
                         row.get("suiviDescription", String.class),
                         row.get("suiviEtat", String.class),
-                        row.get("ordonnanceDate", LocalDate.class),
-                        row.get("ordonnanceContenu", String.class),
-                        row.get("medicamentNom", String.class),
-                        row.get("medicamentDescription", String.class),
-                        row.get("prescriptionQuantite", Integer.class)
+                        new OrdonnanceDto(row.get("ordonnanceDate", LocalDate.class), new ArrayList<>())
                 );
-                patient.getConsultations().add(consultation);
+                patient.getConsultations().add(newConsultation);
+                return newConsultation;
+            });
+
+            PrescriptionDto prescription = new PrescriptionDto(
+                    row.get("medicamentNom", String.class),
+                    row.get("medicamentDescription", String.class),
+                    row.get("prescriptionQuantite", Integer.class)
+            );
+
+            if (prescription.getMedicamentNom() != null) {
+                consultation.getOrdonnance().getPrescriptions().add(prescription);
             }
         }
 
         return new ArrayList<>(resultMap.values());
     }
+
 
 
     //Affiche la liste des patients n'ayant pas vu un certain médécin dpuis de plus de X jours

@@ -64,7 +64,7 @@ public class MesureService {
         }
 
         // Vérification de l'existence de la mesure pour le suivi, la date et la période données
-        Optional<Mesure> mesureOptional = mesureRepository.findBySuiviAndDateMesureAndPeriode(suivi, mesureDto.getDateMesure(), mesureDto.getPeriode());
+        Optional<Mesure> mesureOptional = mesureRepository.findBySuiviAndDateMesureAndPeriodeAndNomMesure(suivi, mesureDto.getDateMesure(), mesureDto.getPeriode(), mesureDto.getNomMesure());
         if (mesureOptional.isPresent()) {
             throw new IllegalArgumentException("Mesure already exists for the given date and period.");
         }
@@ -77,6 +77,7 @@ public class MesureService {
         mesure.setUnite(mesureDto.getUnite());
         mesure.setPeriode(mesureDto.getPeriode());
         mesure.setDateMesure(mesureDto.getDateMesure());
+        mesure.setNomMesure(mesureDto.getNomMesure());
         mesureRepository.save(mesure);
         return mesure;
     }

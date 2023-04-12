@@ -15,4 +15,6 @@ public class MesureDto {
     private String periode;
 
     private LocalDate dateMesure;
+
+    private String nomMesure;
 }

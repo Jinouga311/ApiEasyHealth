@@ -44,12 +44,12 @@ public class ConsultationService {
         return consultations;
     }
 
-    public List<ConsultationInformationsForPatient> getConsultationsByPatientMail(String mail){
-        return consultationRepository.getConsultationsInformationsForPatientByMail(mail);
+    public List<ConsultationInformationsForPatient> getConsultationsByPatientMail(String mail) {
+        return consultationRepository.getConsultationsByPatientMail(mail);
     }
 
-    public List<ConsultationInformationsForPatient>getConsultationsInformationsAvecSuiviForPatientByMail(String mail){
-        return consultationRepository.getConsultationsInformationsAvecSuiviForPatientByMail(mail);
+    public List<ConsultationInformationsForPatient> getConsultationsInformationsAvecSuiviForPatientByMail(String mail) {
+        return consultationRepository.getConsultationsWithSuiviByPatientEmail(mail);
     }
 
 
