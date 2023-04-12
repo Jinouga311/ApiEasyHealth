@@ -46,9 +46,9 @@ public class PatientService {
         return patientRepository.getPatientsSuiviDetailsByMedecinAdresseMail(mail);
     }
 
-    public Patient updatePatient(String medecinMail, MultipartFile file, String adresseMail, String numeroTelephone, String pseudo, String motDePasse) throws IOException {
-        Patient patient = patientRepository.findByAdresseMail(medecinMail)
-                .orElseThrow(() -> new PatientNotFoundException("Medecin not found with email: " + medecinMail));
+    public Patient updatePatient(String patientMail, MultipartFile file, String adresseMail, String numeroTelephone, String pseudo, String motDePasse) throws IOException {
+        Patient patient = patientRepository.findByAdresseMail(patientMail)
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found with email: " + patientMail));
 
         if (file != null && !file.isEmpty()) {
             // Supprimer l'ancienne photo de profil s'il y en avait une
@@ -61,14 +61,16 @@ public class PatientService {
             Path uploadDir = Paths.get("profilEasyHealth", "patient").toAbsolutePath().normalize();
             Files.createDirectories(uploadDir);
             Path filePath = uploadDir.resolve(fileName);
+
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 throw new RuntimeException("Could not store file " + fileName + ". Please try again!", e);
             }
+
+            String relativeFilePath = "profilEasyHealth/patient/" + fileName;
             // Mettre à jour le chemin d'accès à la photo de profil dans la base de données
-            String fileFullPath = filePath.toString();
-            patient.setCheminFichier(fileFullPath);
+            patient.setCheminFichier(relativeFilePath);
         }
 
         // Mettre à jour les autres informations du patient si elles sont fournies
@@ -87,6 +89,8 @@ public class PatientService {
 
         return patientRepository.save(patient);
     }
+
+
 
 
 

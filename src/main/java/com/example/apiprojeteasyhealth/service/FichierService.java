@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
@@ -58,15 +60,23 @@ public class FichierService {
         // Enregistrement du fichier en base de données
         fichierRepository.save(fichier);
 
-        // Sauvegarde du fichier sur le disque dur
-        Path path = this.uploadDir.resolve(fichier.getNomFichier() + "." + FilenameUtils.getExtension(file.getOriginalFilename()));
-        Files.createDirectories(path.getParent());
-        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        // Création du répertoire relatif s'il n'existe pas
+        String relativeDirectory = "fichierEasyHealth/";
+        File directory = new File(relativeDirectory);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
 
-        // Mise à jour du chemin du fichier en base de données
-        fichier.setCheminFichier(path.toAbsolutePath().toString());
+        // Sauvegarde du fichier dans le répertoire relatif
+        String relativePath = relativeDirectory + fichier.getNomFichier() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+        File destinationFile = new File(relativePath);
+        Files.copy(file.getInputStream(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        // Mise à jour du chemin relatif du fichier en base de données
+        fichier.setCheminFichier(relativePath);
         fichierRepository.save(fichier);
     }
+
 
     public List<Fichier> getFilesByPatientAndMedecin(String mailPatient, String mailMedecin) {
 // Recherche du patient
