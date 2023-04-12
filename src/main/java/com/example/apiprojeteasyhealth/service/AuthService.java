@@ -58,12 +58,12 @@ public class AuthService {
 
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         String roleDirectory = role.toString().toLowerCase();
-        Path rolePath = uploadDir2.resolve(roleDirectory);
+        Path rolePath = Paths.get("profilEasyHealth", roleDirectory);
         Files.createDirectories(rolePath); // Crée le dossier si nécessaire
 
         String hashedPassword = bCryptPasswordEncoder.encode(userRegistor.getMotDePasse());
 
-        String filePath = StringUtils.cleanPath(rolePath + "/" + filename);
+        Path filePath = rolePath.resolve(filename);
         if (role.equals(Role.PATIENT)) {
             Patient patient = Patient.builder()
                     .nom(userRegistor.getNom())
@@ -72,7 +72,7 @@ public class AuthService {
                     .motDePasse(hashedPassword)
                     .numeroTelephone(userRegistor.getNumeroTelephone())
                     .pseudo(userRegistor.getPseudo())
-                    .cheminFichier(filePath)
+                    .cheminFichier(filePath.toString())
                     .build();
             patientRepository.save(patient);
         } else if (role.equals(Role.MEDECIN)) {
@@ -82,13 +82,13 @@ public class AuthService {
                     .motDePasse(hashedPassword)
                     .numeroTelephone(userRegistor.getNumeroTelephone())
                     .pseudo(userRegistor.getPseudo())
-                    .cheminFichier(filePath)
+                    .cheminFichier(filePath.toString())
                     .build();
             medecinRepository.save(medecin);
         }
-        Path targetPath = Paths.get(filePath);
-        Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
     }
+
 
 
 

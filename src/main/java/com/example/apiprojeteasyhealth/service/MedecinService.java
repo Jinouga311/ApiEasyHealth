@@ -45,12 +45,12 @@ public class MedecinService {
         if (file != null && !file.isEmpty()) {
             // Supprimer l'ancienne photo de profil s'il y en avait une
             if (medecin.getCheminFichier() != null && !medecin.getCheminFichier().isEmpty()) {
-                Path oldFilePath = Paths.get(medecin.getCheminFichier());
+                Path oldFilePath = Paths.get(medecin.getCheminFichier()).toAbsolutePath().normalize();
                 Files.deleteIfExists(oldFilePath);
             }
             // Enregistrer la nouvelle photo de profil
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            Path uploadDir = Paths.get("profilEasyHealth", "medecin").toAbsolutePath().normalize();
+            Path uploadDir = Paths.get("profilEasyHealth", "medecin");
             Files.createDirectories(uploadDir);
             Path filePath = uploadDir.resolve(fileName);
             try (InputStream inputStream = file.getInputStream()) {
@@ -58,9 +58,9 @@ public class MedecinService {
             } catch (IOException e) {
                 throw new RuntimeException("Could not store file " + fileName + ". Please try again!", e);
             }
-            // Mettre à jour le chemin d'accès à la photo de profil dans la base de données
-            String fileFullPath = filePath.toString();
-            medecin.setCheminFichier(fileFullPath);
+            // Mettre à jour le chemin d'accès à la photo de profil dans la base de données (chemin relatif)
+            String relativeFilePath = "profilEasyHealth/medecin/" + fileName;
+            medecin.setCheminFichier(relativeFilePath);
         }
 
         // Mettre à jour les autres informations du médecin si elles sont fournies
@@ -79,6 +79,7 @@ public class MedecinService {
 
         return medecinRepository.save(medecin);
     }
+
 
 
 
