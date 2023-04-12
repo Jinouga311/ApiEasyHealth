@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,8 +32,19 @@ public class AuthService {
 
     private final Path uploadDir2;
 
-    public AuthService(@Value("${upload.dir2}") String uploadDir2) {
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public AuthService(Path uploadDir2) {
+        this.uploadDir2 = uploadDir2;
+        this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    }
+
+
+
+
+    public AuthService(@Value("${upload.dir2}") String uploadDir2, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.uploadDir2 = Paths.get(uploadDir2);
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
 
@@ -49,13 +61,15 @@ public class AuthService {
         Path rolePath = uploadDir2.resolve(roleDirectory);
         Files.createDirectories(rolePath); // Crée le dossier si nécessaire
 
+        String hashedPassword = bCryptPasswordEncoder.encode(userRegistor.getMotDePasse());
+
         String filePath = StringUtils.cleanPath(rolePath + "/" + filename);
         if (role.equals(Role.PATIENT)) {
             Patient patient = Patient.builder()
                     .nom(userRegistor.getNom())
                     .prenom(userRegistor.getPrenom())
                     .adresseMail(userRegistor.getAdresseMail())
-                    .motDePasse(userRegistor.getMotDePasse())
+                    .motDePasse(hashedPassword)
                     .numeroTelephone(userRegistor.getNumeroTelephone())
                     .pseudo(userRegistor.getPseudo())
                     .cheminFichier(filePath)
@@ -65,7 +79,7 @@ public class AuthService {
             Medecin medecin = Medecin.builder()
                     .nom(userRegistor.getNom())
                     .adresseMail(userRegistor.getAdresseMail())
-                    .motDePasse(userRegistor.getMotDePasse())
+                    .motDePasse(hashedPassword)
                     .numeroTelephone(userRegistor.getNumeroTelephone())
                     .pseudo(userRegistor.getPseudo())
                     .cheminFichier(filePath)
@@ -82,7 +96,7 @@ public class AuthService {
 
     public Optional<Patient> loginPatient(String adresseMail, String motDePasse) {
         Optional<Patient> patient = patientRepository.findByAdresseMail(adresseMail);
-        if (patient.isPresent() && patient.get().getMotDePasse().equals(motDePasse)) {
+        if (patient.isPresent() && bCryptPasswordEncoder.matches(motDePasse, patient.get().getMotDePasse())) {
             return patient;
         }
         return Optional.empty();
@@ -90,9 +104,10 @@ public class AuthService {
 
     public Optional<Medecin> loginMedecin(String adresseMail, String motDePasse) {
         Optional<Medecin> medecin = medecinRepository.findByAdresseMail(adresseMail);
-        if (medecin.isPresent() && medecin.get().getMotDePasse().equals(motDePasse)) {
+        if (medecin.isPresent() && bCryptPasswordEncoder.matches(motDePasse, medecin.get().getMotDePasse())) {
             return medecin;
         }
         return Optional.empty();
     }
+
 }
