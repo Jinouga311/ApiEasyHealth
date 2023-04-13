@@ -31,6 +31,7 @@ public class MesureController {
         return mesureService.getMesureFromPatientAndPathologie(mailPatient, pathologie, dateDebut, dateFin);
     }
 
+
     @GetMapping("/mesurePatient/{mailPatient}/{dateDebut}/{dateFin}")
     @Operation(summary = "Mesures d'un patient pour un intervalle de date", description = "Affiche les mesures d'un patient pour  un intervalle de dates données")
     public List<MesureForPatient> getMesureFromPatient(@PathVariable String mailPatient, @PathVariable LocalDate dateDebut, @PathVariable LocalDate dateFin) {

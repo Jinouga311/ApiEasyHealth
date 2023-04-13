@@ -28,6 +28,7 @@ public class MesureService {
     @Autowired
     PatientRepository patientRepository;
 
+
     public List<MesureForPatientAndPathologie> getMesureFromPatientAndPathologie(String mailPatient, String Pathologie, LocalDate starDate, LocalDate endDate){
         List<MesureForPatientAndPathologie> mesures =  mesureRepository.getMesureFromPatientAndPathologie(mailPatient, Pathologie, starDate, endDate);
 

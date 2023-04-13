@@ -32,6 +32,7 @@ public class Mesure {
     @JoinColumn(name = "id_suivi")
     private Suivi suivi;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_patient")
     private Patient patient;
