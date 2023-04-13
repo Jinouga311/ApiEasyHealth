@@ -42,7 +42,7 @@ public class MedecinService {
 
 
 
-    public Medecin updateMedecin(String medecinMail, MultipartFile file, String adresseMail, String numeroTelephone, String pseudo, String motDePasse) throws IOException {
+    public Medecin updateMedecin(String medecinMail, MultipartFile file, String adresseMail, String numeroTelephone, String pseudo, String motDePasse, String specialite) throws IOException {
         Medecin medecin = medecinRepository.findByAdresseMail(medecinMail)
                 .orElseThrow(() -> new MedecinNotFoundException("Medecin not found with email: " + medecinMail));
 
@@ -80,6 +80,9 @@ public class MedecinService {
         if (motDePasse != null) {
             String hashedPassword = bCryptPasswordEncoder.encode(motDePasse);
             medecin.setMotDePasse(hashedPassword);
+        }
+        if(specialite != null){
+            medecin.setSpecialite(specialite);
         }
 
         return medecinRepository.save(medecin);
