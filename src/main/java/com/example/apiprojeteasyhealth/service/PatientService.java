@@ -3,17 +3,15 @@ package com.example.apiprojeteasyhealth.service;
 import com.example.apiprojeteasyhealth.dto.AllAboutPatient;
 import com.example.apiprojeteasyhealth.dto.PatientAlerte;
 import com.example.apiprojeteasyhealth.dto.PatientSuiviDetailsDto;
-import com.example.apiprojeteasyhealth.entity.Medecin;
 import com.example.apiprojeteasyhealth.entity.Patient;
-import com.example.apiprojeteasyhealth.exception.MedecinNotFoundException;
 import com.example.apiprojeteasyhealth.exception.PatientNotFoundException;
 import com.example.apiprojeteasyhealth.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -28,6 +26,12 @@ public class PatientService {
 
     @Autowired
     private PatientRepository patientRepository;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public PatientService(BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
 
     public List<AllAboutPatient> getPatientInfoByEmail(String adresseMail) {
@@ -84,7 +88,8 @@ public class PatientService {
             patient.setPseudo(pseudo);
         }
         if (motDePasse != null) {
-            patient.setMotDePasse(motDePasse);
+            String hashedPassword = bCryptPasswordEncoder.encode(motDePasse);
+            patient.setMotDePasse(hashedPassword);
         }
 
         return patientRepository.save(patient);
