@@ -26,6 +26,7 @@ public interface MesureRepository extends JpaRepository<Mesure, Long> {
             + "ORDER BY m.periode DESC")
     List<MesureForPatientAndPathologie> getMesureFromPatientAndPathologie(@Param("mailPatient") String mailPatient, @Param("libellePathologie") String libellePathologie, @Param("startDate")LocalDate starDate, @Param("endDate") LocalDate endDate);
 
+
     //Affiche les dernières mesures d'un patient donnée
     @Query("SELECT new com.example.apiprojeteasyhealth.dto.MesureForPatient(m.valeur, m.unite, m.periode, m.dateMesure, pa.libelle)\n" +
             "FROM Mesure m\n" +

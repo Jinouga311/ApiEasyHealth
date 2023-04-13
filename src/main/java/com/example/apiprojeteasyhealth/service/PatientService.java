@@ -58,7 +58,6 @@ public class PatientService {
             // Supprimer l'ancienne photo de profil s'il y en avait une
             if (patient.getCheminFichier() != null && !patient.getCheminFichier().isEmpty()) {
                 Path oldFilePath = Paths.get(patient.getCheminFichier());
-                Files.deleteIfExists(oldFilePath);
             }
             // Enregistrer la nouvelle photo de profil
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MesureForPatientAndPathologie {
 
+
     public MesureForPatientAndPathologie(Float valeur, String unite, String periode, LocalDate date, String nomMesure, String pathologie) {
         this.valeur = valeur;
         this.unite = unite;

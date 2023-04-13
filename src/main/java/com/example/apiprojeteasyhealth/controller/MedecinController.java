@@ -71,12 +71,14 @@ public class MedecinController {
             @RequestParam(value = "adresseMail", required = false) String adresseMail,
             @RequestParam(value = "numeroTelephone", required = false) String numeroTelephone,
             @RequestParam(value = "pseudo", required = false) String pseudo,
-            @RequestParam(value = "motDePasse", required = false) String motDePasse) throws IOException {
+            @RequestParam(value = "motDePasse", required = false) String motDePasse
+    ) throws IOException {
 
         Medecin medecin = medecinService.updateMedecin(medecinMail, file, adresseMail, numeroTelephone, pseudo, motDePasse);
 
         return ResponseEntity.ok(medecin);
     }
+
 
 
 
