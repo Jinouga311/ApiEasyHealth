@@ -74,7 +74,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
             PrescriptionDto prescription = new PrescriptionDto(
                     row.get("medicamentNom", String.class),
                     row.get("medicamentDescription", String.class),
-                    row.get("prescriptionQuantite", Integer.class)
+                    row.get("prescriptionQuantite", Integer.class) != null ? row.get("prescriptionQuantite", Integer.class) : 0
             );
 
             if (prescription.getMedicamentNom() != null) {

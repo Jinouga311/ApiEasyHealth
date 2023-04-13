@@ -1,18 +1,16 @@
 package com.example.apiprojeteasyhealth.service;
 
 import com.example.apiprojeteasyhealth.dto.AllAboutMedecin;
-import com.example.apiprojeteasyhealth.dto.AllAboutPatient;
 import com.example.apiprojeteasyhealth.entity.Medecin;
 import com.example.apiprojeteasyhealth.exception.MedecinNotFoundException;
 import com.example.apiprojeteasyhealth.repository.MedecinRepository;
-import com.example.apiprojeteasyhealth.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -26,6 +24,12 @@ public class MedecinService {
 
     @Autowired
     private MedecinRepository medecinRepository;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public MedecinService(BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     public List<AllAboutMedecin> getMedecinInfoByEmail(String adresseMail) {
         return medecinRepository.getMedecinInfoByEmail(adresseMail);
@@ -74,7 +78,8 @@ public class MedecinService {
             medecin.setPseudo(pseudo);
         }
         if (motDePasse != null) {
-            medecin.setMotDePasse(motDePasse);
+            String hashedPassword = bCryptPasswordEncoder.encode(motDePasse);
+            medecin.setMotDePasse(hashedPassword);
         }
 
         return medecinRepository.save(medecin);
